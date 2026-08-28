@@ -1,9 +1,4 @@
 {
-<<<<<<< HEAD
-  "dependencies": {
-    "express": "^5.2.1",
-    "mongodb": "^7.5.0",
-=======
   "name": "backend_rambura",
   "version": "1.0.0",
   "description": "",
@@ -35,7 +30,6 @@
     "mongoose": "^9.9.4"
   },
   "devDependencies": {
->>>>>>> 5a03eed8980b30e2dfcb9dbda830de12b5b6d423
     "nodemon": "^3.1.14"
   }
 }
