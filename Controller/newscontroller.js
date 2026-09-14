@@ -1,52 +1,159 @@
- const express=require("express");
+const { ObjectId } = require('mongodb');
+
 //-------------------------------------------------
-//  --------- GET USER FORM CONTROLLER------------------------
+//  --------- GET NEWS FORM CONTROLLER------------------------
 //---------------------------------
-const get_news=async(req,res)=>{
-    const department=[];
-    const get=await db.collection("department").find().forEach((element)=>{
-     users.push(element)
+const getnews=(db)=> async(req,res)=>{
+   try{
+ 
+    const news=[];
+    const get=await db.collection("news").find().forEach((element)=>{
+     news.push(element)
     });
-    res.json(users);
+    res.status(500).json(news);
+   }
+   catch(error){
+      res.status(500).json({
+        message:"failed to get_news",
+        error:error.message
+      })
+   }
 }
 
 //-------------------------------------------------
-//  --------- GET SINGLE USER FROM CONTROLLER------------------------
+//  --------- GET SINGLE NEWS FROM CONTROLLER------------------------
 //---------------------------------
-const get_new=async(req,res)=>{
-   
+const getnew=(db)=> async(req,res)=>{
+   try{
+    const {id}=req.params;
+    if(!ObjectId.isvalid(id)){
+        return res.status(400).json({
+            message:"Invalid new_id"
+        })
+    }
+    const news=await db.collection("news").findOne({_id:new ObjectId(id)})
+
+    if(!news){
+        return res.status(400).json({
+            message:"invalid news"
+        })
+    }
+     res.status(500).json(news);   
+   }
+   catch(error){
+      return res.status(500).json({
+        message:"failed to get_new",
+        error:error.message
+      })
+   }
 }
 
 
 
 
 //-------------------------------------------------
-//  --------- ADD USER FROM CONTROLLER------------------------
+//  --------- ADD NEWS FROM CONTROLLER------------------------
 //---------------------------------
-const add_news=async(req,res)=>{
+const addnews=(db) => async(req,res)=>{
+ try{
+  const news=req.body;
 
+   if(!Array.isArray(news)){
+    return res.status(500).json({
+        message:"request body has to be news"
+    }) 
+}
+
+    const add=await db.collection("news").insertMany(news);
+    res.status(201).json(add)
+  
+ }
+ catch(error){
+  return res.status(500).json({
+    message:"failed to add news"
+  })
+ }
 }
 
 
 
 
 //-------------------------------------------------
-//  ---------  UPDATING USER FROM CONTROLLER------------------------
+//  ---------  UPDATING NEWS FROM CONTROLLER------------------------
 //---------------------------------
 
-const update_news=async(req,res)=>{
+const updatenews=(db)=>async(req,res)=>{
+    try{
+    const {id}=req.params;
 
+    if(!ObjectId.isValid(id)){
+        return res.status(400).json({
+            message:"invlaid id"
+        }) }
+        const update=await db.collection("news").updateOne(
+            {
+                _id:new ObjectId(id)
+            },
+            {
+                $set:req.body
+            }
+        )
+        if(update.matchedCount===0){
+            return res.status(404).json({
+                message:"news not found"
+            })
+        }
+      res.status(200).json(update)
+    }
+    catch(error){
+        return res.status(500).json({
+            message:"failed to update",
+            error:error.message
+        })
+
+    }
 }
 
 
 
 //-------------------------------------------------
-//  --------- DELETE USER FROM CONTROLLER------------------------
+//  --------- DELETE NEWSFROM CONTROLLER------------------------
 //---------------------------------
-const delet_news=async(req,res)=>{
+const deletnews=(db)=> async(req,res)=>{
+    try{
+    const {id}=req.params
+
+    if(!ObjectId.isvalid(id)){
+        return res.status(401).json({
+            message:"invalid news_id"
+        })
+
+    }
+    const del= await db.collection("news").deleteOne({_id:new ObjectId(id)});
+
+    if(del.deletedCount===0){
+        return res.status(401).json({
+            message:"news not found"
+        })
+    }
+    res.status(500).json(del)
+    }
+    catch(error){
+return res.status(500).json({
+    message:"failed to delete",
+    error:error.message
+})
+    }
 
 }
 
+module.exports={
+    getnews,
+    getnew,
+    addnews,
+    updatenews,
+    deletnews
+};
 
 
 
