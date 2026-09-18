@@ -1,12 +1,12 @@
 const { ObjectId } = require('mongodb');
 
 //-------------------------------------------------
-// --------- GET USER FROM CONTROLLER -------------
+// --------- GET REPORT FROM CONTROLLER -------------
 //-------------------------------------------------
-const getusers = (db) => async (req, res) => {
+const getreports = (db) => async (req, res) => {
   try {
-    const user = await db.collection("user").find().toArray();
-    res.status(200).json(user);
+    const report = await db.collection("report").find().toArray();
+    res.status(200).json(report);
   } catch (error) {
     res.status(500).json({
       message: "failed to load",
@@ -18,22 +18,22 @@ const getusers = (db) => async (req, res) => {
 //-------------------------------------------------
 // --------- GET SINGLE USER FROM CONTROLLER ------
 //-------------------------------------------------
-const getuser = (db) => async (req, res) => {
+const getreport = (db) => async (req, res) => {
   try {
     const { id } = req.params;
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({
-        message: "Invalid user_id"
+        message: "Invalid report_id"
       });
     }
-    const user1 = await db.collection("user").findOne({ _id: new ObjectId(id) });
+    const report = await db.collection("report").findOne({ _id: new ObjectId(id) });
 
-    if (!user1) {
+    if (!report) {
       return res.status(404).json({
-        message: "user not found"
+        message: "report not found"
       });
     }
-    res.status(200).json(user1);
+    res.status(200).json(report);
   } catch (error) {
     res.status(500).json({
       message: "failed to load",
@@ -45,21 +45,21 @@ const getuser = (db) => async (req, res) => {
 //-------------------------------------------------
 // --------- ADD USER FROM CONTROLLER -------------
 //-------------------------------------------------
-const adduser = (db) => async (req, res) => {
+const addreport = (db) => async (req, res) => {
   try {
-    const user = req.body;
+    const report = req.body;
 
-    if (!Array.isArray(user)) {
+    if (!Array.isArray(report)) {
       return res.status(400).json({
         message: "Request body must be an array of users"
       });
     }
 
-    const add = await db.collection("user").insertMany(user);
+    const add = await db.collection("report").insertMany(report);
     res.status(201).json(add);
   } catch (error) {
     res.status(500).json({
-      message: "failed to add user",
+      message: "failed to add report",
       error: error.message
     });
   }
@@ -68,7 +68,7 @@ const adduser = (db) => async (req, res) => {
 //-------------------------------------------------
 // --------- UPDATING USER FROM CONTROLLER --------
 //-------------------------------------------------
-const updateuser = (db) => async (req, res) => {
+const updatereport = (db) => async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -78,14 +78,14 @@ const updateuser = (db) => async (req, res) => {
       });
     }
 
-    const update = await db.collection("user").updateOne(
+    const update = await db.collection("report").updateOne(
       { _id: new ObjectId(id) },
       { $set: req.body }
     );
 
     if (update.matchedCount === 0) {
       return res.status(404).json({
-        message: "user not found"
+        message: "report not found"
       });
     }
     res.status(200).json(update);
@@ -100,21 +100,21 @@ const updateuser = (db) => async (req, res) => {
 //-------------------------------------------------
 // --------- DELETE USER FROM CONTROLLER ----------
 //-------------------------------------------------
-const deletuser = (db) => async (req, res) => {
+const deletreport = (db) => async (req, res) => {
   try {
     const { id } = req.params;
 
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({
-        message: "invalid user_id"
+        message: "invalid report_id"
       });
     }
 
-    const del = await db.collection("user").deleteOne({ _id: new ObjectId(id) });
+    const del = await db.collection("report").deleteOne({ _id: new ObjectId(id) });
 
     if (del.deletedCount === 0) {
       return res.status(404).json({
-        message: "user not found"
+        message: "report not found"
       });
     }
     res.status(200).json(del);
@@ -127,9 +127,9 @@ const deletuser = (db) => async (req, res) => {
 };
 
 module.exports = {
-  getusers,
-  getuser,
-  adduser,
-  updateuser,
-  deletuser
+  getreports,
+  getreport,
+  addreport,
+  updatereport,
+  deletreport
 };

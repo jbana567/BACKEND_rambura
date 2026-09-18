@@ -9,10 +9,10 @@ const swaggerSpec=require("./Swagger")
  //-------------------------------------------------
  //  ---------  ROUTES  ------------------------
  //---------------------------------
-const userRoute=require("./src/config/routes/userRoute");
-const departmentRoute=require("./src/config/routes/departmentRoute");
-const staffRoute=require("./src/config/routes/staffRoute");
-const newsRoute=require("./src/config/routes/newsRoute");
+const reportRoute=require("./src/config/routes/reportRoute");
+const inventoryItemRoute=require("./src/config/routes/inventoryItemRoute");
+const repairRoute=require("./src/config/routes/repairRoute");
+const inventoryTransactionRoute=require("./src/config/routes/inventoryTransactionRoute");
 
 const app = express();
 
@@ -36,15 +36,15 @@ const startServer = async () => {
                 message: "Rambura backend is running"
             });
         });
-     app.use("/user",userRoute(db));
-     app.use("/department",departmentRoute(db));
-     app.use("/staff",staffRoute(db));
-     app.use("/news",newsRoute(db));
+     app.use("/inventoryItem",inventoryItemRoute(db));
+     app.use("/inventoryTransanction",inventoryTransactionRoute(db));
+     app.use("/repair",repairRoute(db));
+     app.use("/report",reportRoute(db));
 
     
 
 app.listen(3000, () => {
-            console.log(`Server running on http//localhost:${PORT}`);
+            console.log(`Server running on http://localhost:${PORT}`);
         });
 
     } catch (error) {
